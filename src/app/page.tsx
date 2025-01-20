@@ -75,12 +75,12 @@ export default function Home() {
       <div className=" absolute top-0 left-0 w-full h-[350px] overflow-hidden -z-10 " >
         <Image alt="" src={"/hero_img.jpg"} width={500} height={500} className=" max-w-[130%] w-[130%] " priority  />
       </div>
-      <div className=" w-full m-auto flex justify-center pt-6 flex-col max-w-[90%] " >
+      <div className=" w-full m-auto flex justify-center pt-20 flex-col max-w-[90%] " >
         <div className=" w-[200px] h-[70px] relative m-auto " >
         <Image alt="" src={"/logo.svg"} fill />
         </div>
         <div className=" md:grid md:grid-cols-2 md:gap-3 md:mt-6 ">
-          <div className=" rounded-3xl bg-[#394150] bg-opacity-75 p-7  " >
+          <div className=" rounded-3xl bg-[#191f2be0] bg-opacity-75 p-7  " >
              <ul className=" flex space-x-4 border-b border-b-[#D2D5DA] pb-4 items-center " >
               <li onClick={()=>detectarIdioma(texto)} className={`${idiomasAceptados.includes(idiomaDetectado) ? '':'bg-[#6e7177]'}   p-1 cursor-pointer bg-opacity-50 hover:bg-[#6e7177] rounded-lg `}  >Detect Language</li>
               <li className={`p-1 cursor-pointer bg-opacity-50 hover:bg-[#45474b] rounded-lg
@@ -110,7 +110,7 @@ export default function Home() {
                <span> <Image alt="" src="/Sort_alfa.svg" width={20} height={20}  /> </span> Translate</button>
              </div>
           </div>
-          <div className=" rounded-3xl bg-[#394150] bg-opacity-75 p-7 mt-4 md:mt-0  " >
+          <div className=" rounded-3xl bg-[#191f2be0] bg-opacity-75 p-7 mt-4 md:mt-0  " >
              <ul className=" grid grid-cols-[max-content_max-content_max-content_1fr] items-center space-x-4 border-b border-b-[#D2D5DA] pb-4 " >
               <li className={`p-1 cursor-pointer bg-opacity-50 hover:bg-[#6e7177] rounded-lg
                  ${ idiomaT == 'en' ? 'bg-[#6e7177]':'' } `}  onClick={()=>{setIdiomaT('en')}} >English</li>
