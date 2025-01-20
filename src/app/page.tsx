@@ -1,101 +1,144 @@
+'use client'
 import Image from "next/image";
+import React, { useState } from "react";
+import {franc} from 'franc';
+import langs from 'langs';
+
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  
+  const idiomasAceptados = ['en', 'es', 'fr', 'hi','pt'];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const [texto, setTexto] = useState('Hello, how are you?');
+  const [idiomaDetectado, setIdiomaDetectado] = useState<string>('en');
+  const [ idiomaT, setIdiomaT ] = useState('fr');
+  const [textoTaducido, setTextoTraducido]= useState('Bonjour, comment allez-vous');
+  const [ErrorIdioma, setErrorDetectarIdioma]= useState('');
+  
+  
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement> ) => {
+    const textoIngresado = event.target.value;
+    setTexto(textoIngresado);
+  
+  };
+  const detectarIdioma = (idioma: string)=>{
+    if (idioma.length > 60) {
+      const langCode = franc(idioma, { minLength: 4 });
+      const idiomas = langs.where('3', langCode);
+      if (idiomas) {
+        
+        setErrorDetectarIdioma('')
+        const codeIdioma = idiomas[1]
+        setIdiomaDetectado(codeIdioma)
+      }
+    }else{
+      console.log('Texto muy corto para identidicar el idioma');
+      setErrorDetectarIdioma('texto muy corto para identificar el idioma')
+    }
+  }
+ 
+  const handleclick = async ( )=>{
+      detectarIdioma(texto)
+      const res = await fetch(`https://api.mymemory.translated.net/get?q=${texto}&langpair=${idiomaDetectado}|${idiomaT}`);
+      const data = await res.json()
+      setTextoTraducido(data.responseData.translatedText)  
+  }
+
+  const handleIdioma = (idioma: string)=>{
+    setIdiomaDetectado(idioma);
+  }
+
+  const textToSpeech = (text: string, idioma: string ) => {
+    if (text.length > 0) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = idioma;
+          speechSynthesis.speak(utterance);
+      } else {
+        alert('Lo siento, tu navegador no soporta la síntesis de voz.');
+      }
+    }
+  }
+
+  const cambiarTexto = ()=>{
+    setIdiomaDetectado(idiomaT);
+    
+    setIdiomaT(idiomaDetectado);
+    
+    setTextoTraducido(texto);
+    setTexto(textoTaducido)
+  }
+
+  return (
+    <div className=" relative " >
+      <div className=" absolute top-0 left-0 w-full h-[350px] overflow-hidden -z-10 " >
+        <Image alt="" src={"/hero_img.jpg"} width={500} height={500} className=" max-w-[130%] w-[130%] " priority  />
+      </div>
+      <div className=" w-full m-auto flex justify-center pt-6 flex-col max-w-[90%] " >
+        <div className=" w-[200px] h-[70px] relative m-auto " >
+        <Image alt="" src={"/logo.svg"} fill />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className=" md:grid md:grid-cols-2 md:gap-3 md:mt-6 ">
+          <div className=" rounded-3xl bg-[#394150] bg-opacity-75 p-7  " >
+             <ul className=" flex space-x-4 border-b border-b-[#D2D5DA] pb-4 items-center " >
+              <li onClick={()=>detectarIdioma(texto)} className={`${idiomasAceptados.includes(idiomaDetectado) ? '':'bg-[#6e7177]'}   p-1 cursor-pointer bg-opacity-50 hover:bg-[#6e7177] rounded-lg `}  >Detect Language</li>
+              <li className={`p-1 cursor-pointer bg-opacity-50 hover:bg-[#45474b] rounded-lg
+                 ${ idiomaDetectado == 'en' ? 'bg-[#6e7177]':'' } `} onClick={()=>handleIdioma('en')}>English</li>
+              <li  className={`p-1 cursor-pointer bg-opacity-50 hover:bg-[#6e7177] rounded-lg
+                 ${ idiomaDetectado == 'fr' ? 'bg-[#6e7177]':'' } `} onClick={()=>handleIdioma('fr')}>French</li>
+              <select name="" id="" onChange={(e) => handleIdioma(e.target.value)} className={` p-1 ${ idiomaDetectado == 'es' || idiomaDetectado == 'pt'|| idiomaDetectado == 'hi'  ? 'bg-[#6e7177] rounded-lg':'bg-transparent'   } `} value={idiomaDetectado} >
+                <option value="" >Select language</option>
+                <option value="es" className="  p-2 bg-[#394150] " >Spanish</option>
+                <option value="hi" className="  p-2 bg-[#394150] " >Hindi</option>
+                <option value="pt" className="  p-2 bg-[#394150] " >Portugués</option>
+              </select>
+             </ul>
+             <textarea onChange={handleChange} name="" id="" className=" w-full h-[200px] bg-transparent pt-4 focus:outline-none font-semibold " value={texto} placeholder="Hello, how are you" maxLength={500} ></textarea>
+             <div className="flex justify-between items-center">
+              <p>{ErrorIdioma}</p>
+             <span className=" flex justify-end " >{texto.length}/500</span>
+             </div>
+             <div className=" grid items-center  grid-cols-[max-content_max-content_1fr] gap-[10px] mt-2 " >
+              <button onClick={()=>textToSpeech(texto, idiomaDetectado)} className=" border-[#2e3746ef]  border-2   rounded-lg p-1 ">
+                 <Image src={"/sound_max_fill.svg"} alt={""} width={25} height={25}  />
+              </button>
+              <button  className=" border-[#2e3746ef] border-2   rounded-lg p-1 ">
+              <Image src={"/Copy.svg"} alt={""} width={25} height={25}  />
+              </button>
+              <button onClick={handleclick} className=" space-x-3 flex items-center  font-bold justify-self-end rounded-lg py-2 px-5 bg-[#263FA9]" >
+               <span> <Image alt="" src="/Sort_alfa.svg" width={20} height={20}  /> </span> Translate</button>
+             </div>
+          </div>
+          <div className=" rounded-3xl bg-[#394150] bg-opacity-75 p-7 mt-4 md:mt-0  " >
+             <ul className=" grid grid-cols-[max-content_max-content_max-content_1fr] items-center space-x-4 border-b border-b-[#D2D5DA] pb-4 " >
+              <li className={`p-1 cursor-pointer bg-opacity-50 hover:bg-[#6e7177] rounded-lg
+                 ${ idiomaT == 'en' ? 'bg-[#6e7177]':'' } `}  onClick={()=>{setIdiomaT('en')}} >English</li>
+              <li className={`p-1 cursor-pointer bg-opacity-50 hover:bg-[#6e7177] rounded-lg
+                 ${ idiomaT == 'fr' ? 'bg-[#6e7177]':'' } `}  onClick={()=>{setIdiomaT('fr')}} >French</li>
+              <select name="" id="" onChange={(e)=>{
+                setIdiomaT(e.target.value)}} value={idiomaT} className={` p-1 ${ idiomaT == 'es' || idiomaT == 'pt'|| idiomaT == 'hi'  ? 'bg-[#6e7177] rounded-lg':'bg-transparent'   } `}  >
+                <option value="">Select language</option>
+                <option value="es" className="  p-2 bg-[#394150] " >Spanish</option>
+                <option value="hi" className="  p-2 bg-[#394150] " >Hindi</option>
+                <option value="pt" className="  p-2 bg-[#394150] " >Portugés</option>
+              </select>
+              <button onClick={cambiarTexto} className="border-[#2e3746ef] border-2 justify-self-end   rounded-lg p-1" >
+                <Image src={"/Horizontal_top_left_main.svg"} alt={""} width={25} height={25} />
+              </button>
+             </ul>
+             <textarea onChange={(e)=>setTextoTraducido(e.target.value)} name="" id="" className=" w-full h-[200px] bg-transparent pt-4 focus:outline-none font-semibold " maxLength={500} value={textoTaducido} ></textarea>
+             <div className=" grid items-center  grid-cols-[max-content_max-content] gap-[10px] mt-2 " >
+              <button onClick={()=>textToSpeech(textoTaducido, idiomaT)} className=" border-[#2e3746ef]  border-2   rounded-lg p-1 ">
+                 <Image src={"/sound_max_fill.svg"} alt={""} width={25} height={25}  />
+              </button>
+              <button className=" border-[#2e3746ef] border-2   rounded-lg p-1 ">
+              <Image src={"/Copy.svg"} alt={""} width={25} height={25}  />
+              </button>
+             </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
