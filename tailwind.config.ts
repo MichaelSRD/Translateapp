@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      mask: {
+        'gradient-80': 'linear-gradient(to right, black 80%, transparent 100%)',
+    }
     },
   },
   plugins: [],

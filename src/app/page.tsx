@@ -72,11 +72,14 @@ export default function Home() {
 
   return (
     <div className=" relative " >
-      <div className=" absolute top-0 left-0 w-full h-[350px] overflow-hidden -z-10 " >
-        <Image alt="" src={"/hero_img.jpg"} width={500} height={500} className=" max-w-[130%] w-[130%] " priority  />
+      <div className=" absolute top-0 left-0 w-full h-[420px] md:h-auto overflow-x-clip -z-10 " >
+        <Image alt="" src={"/hero_img.jpg"} width={500} height={500} className=" max-w-[130%] w-[130%] md:w-[112%] "   priority style={{
+          maskImage: "linear-gradient(to bottom, black 50%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, black 50%, transparent 100%)",
+        }}  />
       </div>
       <div className=" w-full m-auto flex justify-center pt-20 flex-col max-w-[90%] " >
-        <div className=" w-[200px] h-[70px] relative m-auto " >
+        <div className=" w-[200px] h-[70px] relative m-auto  " >
         <Image alt="" src={"/logo.svg"} fill />
         </div>
         <div className=" md:grid md:grid-cols-2 md:gap-3 md:mt-6 ">
